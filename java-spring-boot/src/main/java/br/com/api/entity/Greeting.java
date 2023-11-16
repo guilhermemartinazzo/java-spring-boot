@@ -1,4 +1,4 @@
-package br.com.api.controller;
+package br.com.api.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
