@@ -34,7 +34,6 @@ public class PersonService {
 	public List<PersonVO> findAll() {
 		logger.info("Finding all people");
 		return mapper.parseListObjects(personRepository.findAll(), PersonVO.class);
-
 	}
 
 	@Transactional
