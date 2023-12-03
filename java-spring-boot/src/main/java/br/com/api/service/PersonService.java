@@ -7,54 +7,60 @@ import org.springframework.stereotype.Service;
 
 import br.com.api.entity.Person;
 import br.com.api.exception.ResourceNotFoundException;
+import br.com.api.mapper.Mapper;
 import br.com.api.repository.PersonRepository;
+import br.com.api.vo.PersonVO;
 import jakarta.transaction.Transactional;
 
 @Service
 public class PersonService {
 
+	private static final String PERSON_NOT_FOUND = "Person Not Found";
 	private Logger logger = Logger.getLogger(PersonService.class.getName());
 	private final PersonRepository personRepository;
+	private final Mapper mapper;
 
-	PersonService(PersonRepository personRepository) {
+	PersonService(PersonRepository personRepository, Mapper mapper) {
 		this.personRepository = personRepository;
+		this.mapper = mapper;
 	}
 
-	public Person findById(Long id) {
+	public PersonVO findById(Long id) {
 		logger.info("Finding person by id");
-		return personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Person Not Found"));
+		var entity = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(PERSON_NOT_FOUND));
+		return mapper.parseObject(entity, PersonVO.class);
 	}
 
-	public List<Person> findAll() {
+	public List<PersonVO> findAll() {
 		logger.info("Finding all people");
-		return personRepository.findAll();
+		return mapper.parseListObjects(personRepository.findAll(), PersonVO.class);
 
 	}
 
 	@Transactional
-	public Person create(Person person) {
+	public PersonVO create(PersonVO person) {
 		logger.info("Creating a person");
-		return personRepository.save(person);
-		
+		Person personEntity = mapper.parseObject(person, Person.class);
+		return mapper.parseObject(personRepository.save(personEntity), PersonVO.class);
 	}
 
 	@Transactional
-	public Person update(Person person) {
+	public PersonVO update(PersonVO person) {
 		logger.info("Updating a person");
 		var personEntity = personRepository.findById(person.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("Person Not Found"));
+				.orElseThrow(() -> new ResourceNotFoundException(PERSON_NOT_FOUND));
 		personEntity.setFirstName(person.getFirstName());
 		personEntity.setLastName(person.getLastName());
 		personEntity.setAddress(person.getAddress());
 		personEntity.setGender(person.getGender());
 		Person save = personRepository.save(personEntity);
-		return save;
+		return mapper.parseObject(save, PersonVO.class);
 	}
 
 	public void delete(Long id) {
 		logger.info("Deleting a person");
 		var personEntity = personRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Person Not Found"));
+				.orElseThrow(() -> new ResourceNotFoundException(PERSON_NOT_FOUND));
 		personRepository.delete(personEntity);
 	}
 

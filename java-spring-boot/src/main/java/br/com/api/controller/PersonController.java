@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.api.entity.Person;
 import br.com.api.service.PersonService;
+import br.com.api.vo.PersonVO;
 
 @RestController
 @RequestMapping(value = "/person")
@@ -29,22 +29,22 @@ public class PersonController {
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{personId}")
-	public ResponseEntity<Person> findById(@PathVariable(name = "personId") Long personId) {
+	public ResponseEntity<PersonVO> findById(@PathVariable(name = "personId") Long personId) {
 		return ResponseEntity.ok(personService.findById(personId));
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Person>> findById() {
+	public ResponseEntity<List<PersonVO>> findAll() {
 		return ResponseEntity.ok(personService.findAll());
 	}
 
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Person> create(@RequestBody Person person) {
+	public ResponseEntity<PersonVO> create(@RequestBody PersonVO person) {
 		return ResponseEntity.ok(personService.create(person));
 	}
 
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Person> update(@RequestBody Person person) {
+	public ResponseEntity<PersonVO> update(@RequestBody PersonVO person) {
 		return ResponseEntity.ok(personService.update(person));
 	}
 
