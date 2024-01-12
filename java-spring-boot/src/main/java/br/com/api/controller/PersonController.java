@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.api.service.PersonService;
 import br.com.api.vo.PersonVO;
+import br.com.api.vo.v2.PersonVO2;
 
 @RestController
 @RequestMapping(value = "/person")
@@ -53,4 +54,14 @@ public class PersonController {
 	public void update(@PathVariable(value = "personId") Long personId) {
 		personService.delete(personId);
 	}
+	
+	/**
+	 * V2
+	 */
+	
+	@PostMapping(value = "/v2", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<PersonVO2> createV2(@RequestBody PersonVO2 person) {
+		return ResponseEntity.ok(personService.createV2(person));
+	}
+	
 }
